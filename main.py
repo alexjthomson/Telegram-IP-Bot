@@ -82,14 +82,14 @@ def read_json(path):
             # Try load the JSON data from the target file:
             data = json.load(file)
             # Log the read operation to the root logger:
-            LOGGER.info("Read JSON data at `" + str(path) + "`.")
+            LOGGER.info(f"Read JSON data at `{path}`.")
             # Return the read JSON object:
             return data
     # Catch any exception that occurs during the read operation:
     except Exception as exception:
         # Log the exception with an error message:
         LOGGER.exception(exception)
-        LOGGER.error("Failed to read JSON data from `" + str(path) + "`.")
+        LOGGER.error(f"Failed to read JSON data from `{path}`.")
         # Return None because nothing was read:
         return None
 
@@ -105,14 +105,14 @@ def write_json(path, data):
             # Dump the JSON data to the target file:
             json.dump(file, data, indent = 4)
             # Log the write operation to the root logger:
-            LOGGER.info("Wrote JSON data to `" + str(path) + "`.")
+            LOGGER.info(f"Wrote JSON data to `{path}`.")
             # Return True since the write operation was successful:
             return True
     # Catch any exception that occurs during the write operation:
     except Exception as exception:
         # Log the exception with an error message:
         LOGGER.exception(exception)
-        LOGGER.error("Failed to write JSON data to `" + str(path) + "`")
+        LOGGER.error(f"Failed to write JSON data to `{path}`")
         # Return False since the write operation was unsuccessful:
         return False
 
@@ -129,10 +129,10 @@ def read_field(key, dictionary):
         value = configuration[key]
         if value != None:
             return value
-        LOGGER.info("Read value of `" + str(key) + "`.")
+        LOGGER.info(f"Read value of `{key}`.")
     except Exception as exception:
         LOGGER.exception(exception)
-    LOGGER.error("Failed to read value of `" + str(key) + "`.")
+    LOGGER.error(f"Failed to read value of `{key}`.")
     return None
 
 # Try read configuration file:
@@ -192,13 +192,13 @@ def get_ip():
             # Decode the response body:
             response_body = response.content.decode("utf8")
             # Log response:
-            LOGGER.info("Response from `https://api.ipify.org`: `" + str(response_body) + "`.")
+            LOGGER.info(f"Response from `https://api.ipify.org`: `{response_body}`.")
             # Return the response body:
             return response_body
         # The response code is not "200 OK":
         else:
             # Log that something has gone wrong:
-            LOGGER.error("Failed to get IP address (response.status_code: `" + str(response.status_code) + "`).")
+            LOGGER.error(f"Failed to get IP address (response.status_code: `{response.status_code}`).")
             # Return None:
             return None
     except Exception as exception:
@@ -220,7 +220,7 @@ def check_ip():
     # Check if the current IP of the host machine has changed:
     elif current_ip != last_ip:
         # Construct a message containing the new IP addresses:
-        message = "New public IP address detected: `" + str(current_ip) + "`."
+        message = f"New public IP address detected: `{current_ip}`."
         # Print the message to the console:
         LOGGER.info(message)
         # Send the new IP address to the target chat ID:
@@ -244,7 +244,7 @@ def send_message(chat_id, message):
     global bot
     try:
         bot.sendMessage(chat_id, message)
-        LOGGER.info("Sent message: `" + str(message) + "` to chat ID: `" + str(chat_id) + "`.")
+        LOGGER.info(f"Sent message: `{message}` to chat ID: `{chat_id}`.")
         return True
     except Exception as exception:
         LOGGER.exception(exception)
@@ -258,7 +258,7 @@ def telepot_handle(msg):
         # Get basic information about the incoming message:
         content_type, chat_type, chat_id = telepot.glance(msg)
         chat_username = msg["from"]["username"]
-        LOGGER.info("Received `" + str(chat_type) + " " + str(content_type) + "` message from `" + str(chat_username) + "` (chat_id: `" + str(chat_id) + "`): `" + str(msg.text) + "`.")
+        LOGGER.info(f"Received `{chat_type} {content_type}` message from `{chat_username}` (chat_id: `{chat_id}`): `{msg.text}`.")
         # must be text, private chat, and by specified user
         if (content_type == 'text') and (chat_type == 'private') and (chat_username == admin_username) and (chat_id == admin_chat_id):
             # Get public ip address:
@@ -268,11 +268,11 @@ def telepot_handle(msg):
                 send_message("Failed to obtain IP address.")
             # Send IP address to user:
             else:
-                send_message(chat_id, "IP: `" + str(ip) + "`.")
+                send_message(chat_id, f"IP: `{ip}`.")
             #bot.sendMessage(chat_id, str(chat_id))
         else: # Assume anyone else who is communicating with the bot is not authorized
             # Log this:
-            LOGGER.warning("Received message from unauthorized user: `" + str(chat_username) + "` (chat_id: `" + str(chat_id) + "`).")
+            LOGGER.warning(f"Received message from unauthorized user: `{chat_username}` (chat_id: `{chat_id}`).")
             # Send message:
             send_message(chat_id, "You are not authorized to interact with this bot.")
     except Exception as exception:
