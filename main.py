@@ -258,7 +258,8 @@ def telepot_handle(msg):
         # Get basic information about the incoming message:
         content_type, chat_type, chat_id = telepot.glance(msg)
         chat_username = msg["from"]["username"]
-        LOGGER.info(f"Received `{chat_type} {content_type}` message from `{chat_username}` (chat_id: `{chat_id}`): `{msg.text}`.")
+        message = msg["text"]
+        LOGGER.info(f"Received `{chat_type} {content_type}` message from `{chat_username}` (chat_id: `{chat_id}`): `{message}`.")
         # must be text, private chat, and by specified user
         if (content_type == 'text') and (chat_type == 'private') and (chat_username == admin_username) and (chat_id == admin_chat_id):
             # Get public ip address:
